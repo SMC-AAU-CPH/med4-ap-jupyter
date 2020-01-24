@@ -1,0 +1,781 @@
+# Lecture 9: Spatial effects
+Audio Processing, MED4, Aalborg University, 2019
+
+By Jesper Kjær Nielsen (jkn@create.aau.dk), Audio Analysis Lab, Aalborg
+University.
+
+Last edited: 2019-04-21
+
+## Room reverberation
+
+In the next 20 minutes, you will learn 
+
+- what room reverberation is 
+- why room reverberation is important 
+- how we can model reverberation
+
+### What is room reverberation?
+
+-  If you travel to Grand Canyon and yell "Hello!" as loud as you can,
+   you will hear it repeated a number of times after a second or so.
+   This effect is called an *echo*.
+-  In a *room*, the same thing happens. Only, the delays between the
+   echos are so small that you perceive is quite differently. This
+   effect is called *reverberation*.
+
+<center>
+<img src="figures/grandCanyon.jpg" alt="Grand Canyon" width="70%"/>
+<img src="figures/ap9ReverberationInRoom.png" alt="Room reverberation sketch" width="80%"/>
+</center>
+
+
+Reverberation is usually divided into three parts: 
+
+1. *Direct sound*:
+    the direct path from the source to the listener 
+2. *Early reflections*: sound bounces off the walls a few times before reaching the listener 
+3. *Late reflections*: sound bounces off the walls many times before
+reaching the listener
+
+<center>
+<img src="figures/rev_early_late.png" alt="Reverberation as an impulse response" width="60%"/>
+</center>
+
+
+#### Reverberation time
+
+A very important acoustical quantity of rooms is the *reverberation
+time* which is the time it takes for the *sound pressure level* to
+reduce by *60 dB* from when an excitation signal is abrutly ended. 
+
+- The
+reverberation time of typical living rooms is 0.5-0.7 seconds 
+
+- Churches
+have long reverberation times of several seconds
+
+<center>
+<img src="figures/ap9T60Sketch.png" alt="T60" width="70%"/>
+</center>
+
+
+### Why is room reverberation important?
+
+Reverberation is important since 
+
+- the reflections are useful for
+determining the *distance* to a source (the human brain compares the
+levels of the direct path and initial reflections) 
+
+- too much of it
+reduces speech intelligibility (i.e., it is harder to understand what is
+being said) 
+
+- too little sounds unnatural (most music recordings have
+added artificial reverberation)
+
+#### How sound works (in rooms) 
+<center>
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=JPYt10zrclQ
+" target="_blank"><img src="http://img.youtube.com/vi/JPYt10zrclQ/0.jpg" 
+alt="How sound works (in rooms)" width="480" height="360" border="10" /> 
+</center>
+
+#### Room in rooms
+
+
+When we play back a recording using a set of loudspeakers in a room, we
+combine the reverberation of two rooms! 
+- This is unnatural and confuses
+our brain 
+    
+- Harder to concentrate and understand (think about, e.g.,
+video conferencing)
+    
+- Many manufacturers selling high-end audio
+equipment offer some form of *room compensation* to remove the influence
+of the listener's room.
+
+### Modelling reverberation
+
+<center>
+<img src="figures/rev_early_late.png" alt="Reverberation as an impulse response" width="60%"/>
+</center>
+
+
+We can model a room using a feedforward (FIR) filter with impulse
+response $h_n$, i.e., $$
+    y_n = \sum_{m=0}^{M} h_m x_{n-m}
+$$ where
+
+-  $x_{n}$ is the input signal to the room (e.g., a voice or a
+   loudspeaker signal)
+-  $M$ the length of the *room impulse response (RIR)* (must be longer
+   than the reverberation time)
+-  $y_n$ the signal that you hear
+
+**** Example of the filter length for modelling a RIR
+     :PROPERTIES:
+     :CUSTOM_ID: example-of-the-filter-length-for-modelling-a-rir
+     :END:
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+@@html:<img src="figures/ap9RirAsFilters.png" alt="RIR as filter" width="50%"/>@@
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+Assume that we use a sampling frequency of $f_\text{s}=44.1$ kHz and
+that the reverberation time is $T_{60} = 0.7$ s. The filter length $M$
+should then satisfy $$
+    M \geq T_{60}f_\text{s} = 30870\ \text{samples}\ .
+$$
+
+Note that - the RIR depends on the source and listener position in the
+room, and that a room therefore has many RIRs - we can measure a RIR of
+a room by, e.g., creating an impulse and recording the room's response -
+if we have a RIR, we can simulate how other signals sound in the room -
+that the room-in-room scenario can be modelled as two filters in series
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+@@html:<img src="figures/ap9RoomInRooms.png" alt="Room in rooms" width="80%"/>@@
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+*** Summary
+    :PROPERTIES:
+    :CUSTOM_ID: summary
+    :END:
+
+1. Reverberation is basically the echos in a room
+2. Reverberation is typically divided into
+
+-  direct path
+-  early reflections
+-  late reverberation
+
+3. A very important acoustic quantity for rooms it the *reverberation
+   time*
+4. Reverberation is a very important psychoacoustic phenomem which might
+   be useful or harmful
+5. We can model reverberation using a long feedforward filter
+
+*** Active 5 minutes break
+    :PROPERTIES:
+    :CUSTOM_ID: active-5-minutes-break
+    :END:
+
+Assume that you have the rectangular room sketched below and that the
+propagation speed is 343 m/s. A person is shooting a gun to time 0 at
+position $p_\text{s}$ 1. At what time do you expect to hear the gun shot
+at the listening position $p_\text{s}$? 2. At what time do you expect to
+hear *the first-order reflections* of the gun shot at the listening
+position $p_\text{l}$?
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+@@html:<img src="figures/ap9RirTask.png" alt="Rir task" width="60%"/>@@
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+**** Image source model
+     :PROPERTIES:
+     :CUSTOM_ID: image-source-model
+     :END:
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+@@html:<img src="figures/ism.png" alt="Image source model" width="60%"/>@@
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+** Articifial reverberation: building blocks
+   :PROPERTIES:
+   :CUSTOM_ID: articifial-reverberation-building-blocks
+   :END:
+
+In the next 20 minutes, you will learn - what the plain reverberator is
+- what the allpass reverberator is
+
+Although physically accurate, creating artificial reverberation using a
+room impulse response of a room, i.e., $$
+    y_n = \sum_{m=0}^{M} h_m x_{n-m}
+$$ has some limitations: - for a long RIR (i.e., a large M), we have to
+do many calculations - not easy to adjust for the user
+
+Instead of a physically realistic model, we will instead try to make a
+perceptually realistic model using two components: 1. plain reverberator
+(which is just a feedback comb filter) 2. allpass reverberator (which is
+almost the allpass filter, we have seen before)
+
+*** Plain reverberator
+    :PROPERTIES:
+    :CUSTOM_ID: plain-reverberator
+    :END:
+
+The *plain reverberator* is simply the *feedback comb-filter*.
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+@@html:<img src="figures/comb.jpg" alt="Comb filter" width="50%"/>@@
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+**** Time-domain
+     :PROPERTIES:
+     :CUSTOM_ID: time-domain
+     :END:
+
+The plain reverberator has the difference equation $$
+    y_n = x_n + a y_{n-D}
+$$ where - $D$ is the delay (in samples) - $a$ is the filter coefficient
+
+The impulse response is $$
+    h_n = \begin{cases}
+        a^{n/D} & n=D, 2D, \ldots\\
+        0 & \text{otherwise}
+    \end{cases}\ .
+$$
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+@@html:<img src="figures/ap5ImpulseResponseFeedback.png" alt="Plain reverberator impulse response" width="80%"/>@@
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+ 
+
+#+BEGIN_SRC python :session :results output
+%matplotlib inline
+import numpy as np
+import matplotlib.pyplot as plt
+import scipy.io.wavfile as wave
+import IPython.display as ipd
+
+def plainReverberator(inputSignal, delay, filterParam):
+    nData = np.size(inputSignal)
+    outputSignal = np.zeros(nData)
+    for n in np.arange(nData):
+        if n < delay:
+            outputSignal[n] = inputSignal[n]
+        else:
+            outputSignal[n] = inputSignal[n] + filterParam*outputSignal[n-delay]
+    return outputSignal
+#+END_SRC
+
+From the impulse response, we can calculate the *reverberation time* of
+the plain reverberator as the $n$ satisfying $$
+    -60\ \text{dB} = 20\log10\left(\frac{|a^{0/D}|}{|a^{n/D}|}\right) = -20\log10\left(|a|^{n/D}\right)\ .
+$$
+
+Solving this equation for $|a|$ yields $$
+    |a| = 10^{\frac{3D}{n}} = 10^{\frac{3D}{t_{60}f_\text{s}}}
+$$ where - $t_{60}$ is the reverberation time in seconds - $f_\text{s}$
+is the sampling frequency in Hz.
+
+Thus, given $D$ and $f_\text{s}$, we can choose the magnitude of the
+filter coefficient $a$ so that we get the desired reverberation time
+$t_{60}$.
+
+ 
+
+#+BEGIN_SRC python :session :results output
+def plainGainFromReverbTime(reverbTime, plainDelay, samplingFreq):
+    nDelays = np.size(plainDelay)
+    plainGains = np.zeros(nDelays)
+    for ii in np.arange(nDelays):
+        plainGains[ii] = 10**(-3*plainDelays[ii]/(reverbTime*samplingFreq))
+    return plainGains
+#+END_SRC
+
+**** Frequency-domain
+     :PROPERTIES:
+     :CUSTOM_ID: frequency-domain
+     :END:
+
+The *frequency response* (DTFT) of the plain reverberator is $$
+    H(\omega) = \sum_{n=-\infty}^\infty h_n \mathrm{e}^{-j\omega n} = \frac{1}{1-a\mathrm{e}^{-j\omega D}}
+$$ with amplitude response
+\begin{align}
+    |H(\omega)| &= \sqrt{\frac{1}{1+a^2-2a\cos(\omega D)}}\ .
+\end{align}
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+@@html:<img src="figures/ap9CombFilterAmpResp.png" alt="Plain reverberator amplitude response" width="80%"/>@@
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+**** Limitations of the plain reverberator
+     :PROPERTIES:
+     :CUSTOM_ID: limitations-of-the-plain-reverberator
+     :END:
+
+Unfortunately, a single plain reverberator is not good enough for
+generating realistic reverberation since 1. we would like a high echo
+density (i.e., $D$ should be small) 2. a small $D$ results in widely
+spaced peaks in the amplitude spectrum (i.e., we attenuate large
+portions of the input signal
+
+These problem can solved using - plain reverberators in parallel (to
+increase echo density without decreasing $D$) - allpass reverberator (to
+use a small $D$ without attenuating large portions of the input signal)
+
+*** Allpass reverberator
+    :PROPERTIES:
+    :CUSTOM_ID: allpass-reverberator
+    :END:
+
+The *allpass reverberator* is a generalisation of the traditional
+allpass filter.
+
+**** Time-domain
+     :PROPERTIES:
+     :CUSTOM_ID: time-domain
+     :END:
+
+The allpass reverberator has the difference equation $$
+    y_n = bx_n + x_{n-D} - b y_{n-D}
+$$ where - $D$ is the delay (in samples) - $b$ is the filter coefficient
+
+Note that we for $D=1$ obtain the traditional allpass filter, we have
+previously been using for creating a fractional delay.
+
+The impulse response is $$
+    h_n = \begin{cases}
+        b & n = 0\\
+        (1-b^2)(-b)^{n/D-1} & n = D, 2D, \ldots\\
+        0 & \text{otherwise}
+    \end{cases}
+$$
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+@@html:<img src="figures/ap9AllpassImpResp.png" alt="Allpass reverberator impulse response" width="80%"/>@@
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+ 
+
+#+BEGIN_SRC python :session :results output
+def allpassReverberator(inputSignal, delay, apParameter):
+    nData = np.size(inputSignal)
+    outputSignal = np.zeros(nData)
+    for n in np.arange(nData):
+        if n < delay:
+            outputSignal[n] = inputSignal[n]
+        else:
+            outputSignal[n] = apParameter*inputSignal[n] + inputSignal[n-delay] - \
+                apParameter*outputSignal[n-delay]
+    return outputSignal
+#+END_SRC
+
+**** Frequency-domain
+     :PROPERTIES:
+     :CUSTOM_ID: frequency-domain
+     :END:
+
+The *frequency response* (DTFT) of the allpass reverberator is $$
+    H(\omega) = \sum_{n=-\infty}^\infty h_n \mathrm{e}^{-j\omega n} = \frac{b+\mathrm{e}^{-j\omega D}}{1+b\mathrm{e}^{-j\omega D}}
+$$ with amplitude response
+\begin{align}
+    |H(\omega)| &= 1\ .
+\end{align}
+
+*** Summary
+    :PROPERTIES:
+    :CUSTOM_ID: summary
+    :END:
+
+1. The plain reverberator is simply the allpass filter
+2. The allpass reverberator is a generalised allpass filter
+3. We can control the reverberation times of the plain and allpass
+   reverberators directly through the delays and filter coefficients!
+
+** Artificial reververation: Schroeder's reverberator
+   :PROPERTIES:
+   :CUSTOM_ID: artificial-reververation-schroeders-reverberator
+   :END:
+
+In the next 20 minutes, you will learn - how the plain and allpass
+reverberators can be used to create artificial reverberation - how the
+various filter parameters are selected
+
+The Schroeder's reverberator consists of - *four plain reverberators in
+parallel*: use large delays which are mutually prime numbers so that
+their non-zero outputs do not overlap too often. The filter coefficients
+are designed so that the desired reverberation time is achieved - *two
+allpass reverberators in series*: purpose is to increase the echo
+density (small delays) and not to increase the reverberation time
+significantly (filter coefficients not too close to 1)
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+@@html:<img src="figures/ap9ShroederBlockDiagram.png" alt="Schroeder's reverberator" width="80%"/>@@
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+ 
+
+#+BEGIN_SRC python :session :results output
+def shroederReverb(inputSignal, mixingParams, plainDelays, plainGains, allpassDelays, apParams):
+    nData = np.size(inputSignal)
+    tmpSignal = np.zeros(nData)
+    # run the plain reverberators in parallel
+    nPlainReverberators = np.size(plainDelays)
+    for ii in np.arange(nPlainReverberators):
+        tmpSignal = tmpSignal + \
+            mixingParams[ii]*plainReverberator(inputSignal, plainDelays[ii], plainGains[ii])
+    # run the allpass reverberators in series
+    nAllpassReverberators = np.size(allpassDelays)
+    for ii in np.arange(nAllpassReverberators):
+        tmpSignal = allpassReverberator(tmpSignal, allpassDelays[ii], apParams[ii])
+    return tmpSignal
+#+END_SRC
+
+**** Design procedure
+     :PROPERTIES:
+     :CUSTOM_ID: design-procedure
+     :END:
+
+1. Select the
+
+-  mix parameters so that they sum to 1 (e.g., 0.3, 0.25, 0.25, and 0.2)
+-  delays of the plain reverberator so that they are large and have
+   mutually prime numbers (e.g., 1553, 1613, 1493, and 1153 @ at
+   sampling frequency of 44.1 kHz)
+-  delays of the allpass reverberator so that they are small (i.e., 223
+   and 443 @ at sampling frequency of 44.1 kHz)
+-  filter coefficients of the allpass reverberator so that they are not
+   too close to 1 (i.e., 0.7 and 0.7)
+
+2. Select the reverberation time $t_{60}$
+3. calculate the filter coefficients $a_k$ of the plain reverberator as
+   $$
+   a_k = 10^{\frac{3 D_k}{t_{60} f_\text{s}}}\ .
+   $$
+
+ 
+
+#+BEGIN_SRC python :session :results output
+samplingFreq, guitarSignal = wave.read('data/guitar.wav')
+guitarSignal = guitarSignal/2**15 # normalise
+ipd.Audio(guitarSignal, rate=samplingFreq) 
+#+END_SRC
+
+ 
+
+#+BEGIN_SRC python :session :results output
+mixingParams = np.array([0.3, 0.25, 0.25, 0,20])
+plainDelays = np.array([1553, 1613, 1493, 1153])
+allpassDelays = np.array([223, 443])
+apParams = np.array([-0.7, -0.7])
+reverbTime = 0.8 # seconds
+plainGains = plainGainFromReverbTime(reverbTime, plainDelays, samplingFreq)
+# compute the impulse response of the room
+irLength = np.int(np.floor(reverbTime*samplingFreq))
+impulse = np.r_[np.array([1]),np.zeros(irLength-1)]
+impulseResponse = guitarSignalWithReverb = \
+    shroederReverb(impulse, mixingParams, plainDelays, plainGains, allpassDelays, apParams)
+plt.figure(figsize=(14,6))
+plt.plot(np.arange(irLength)/samplingFreq, impulseResponse)
+plt.xlabel('$t$ [s]'),plt.ylabel('$h(t)$'),plt.xlim((0,(irLength-1)/samplingFreq));
+#+END_SRC
+
+ 
+
+#+BEGIN_SRC python :session :results output
+guitarSignalWithReverb = \
+    shroederReverb(guitarSignal, mixingParams, plainDelays, plainGains, allpassDelays, apParams)
+ipd.Audio(guitarSignalWithReverb, rate=samplingFreq)
+#+END_SRC
+
+**** Some improvements
+     :PROPERTIES:
+     :CUSTOM_ID: some-improvements
+     :END:
+
+Typical improvements of Shroeder's reverberator are to 1. include a
+lowpass filter in the plain reverberator to imitate that higher
+frequency sounds are typically attenuated more in rooms than low
+frequency sounds 2. use more plain reverberators in parallel
+
+*Moorer's reverberator* uses six plain reverberators in parallel, all
+including a lowpass filter.
+
+*** Summary
+    :PROPERTIES:
+    :CUSTOM_ID: summary
+    :END:
+
+1. Schroeder's reverberator combines plain and allpass reverberators to
+   create artificial reverberation
+2. Compared to a physically realistic reverberation model, Shroeder's
+   reverberator requires significantly fewer computations
+3. Compared to a physically realistic reverberation model, the
+   reverberation time can be controlled easily in Shroeder's
+   reverberator
+
+*** Active 10 minutes break
+    :PROPERTIES:
+    :CUSTOM_ID: active-10-minutes-break
+    :END:
+
+In the course, we have encountered many different terms, all related to
+filtering. Here, we will quickly review the most central ones. Discuss
+with your neighbour (not necessarily in order) 1. what filtering is 2.
+what a difference equation is 3. what an impulse response is 4. what the
+frequency response (DTFT) is 5. how the DTFT is related to the
+Z-transform 6. how the DFT is related to the DTFT 7. how the FFT is
+related to the DFT
+
+** Stereo panning techniques
+   :PROPERTIES:
+   :CUSTOM_ID: stereo-panning-techniques
+   :END:
+
+In the next 20 minutes, you will learn - what stereo is - what the
+purpose of a pair of stereo loudspeakers are - how loudspeakers can play
+back sources at different positions
+
+*** Reproducing sound using loudspeakers
+    :PROPERTIES:
+    :CUSTOM_ID: reproducing-sound-using-loudspeakers
+    :END:
+
+How do we make loudspeakers reproduce the sound from, e.g., a symphony
+orchestra?
+
+@@html:<br />@@
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+@@html:<img src="figures/orchestra.jpg" alt="Orchestra" width="80%"/>@@
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+A listener should ideally hear what the sound engineer heard in the
+recording studio. To do that, we have to 1. place listener in the
+sweet-spot 2. attenuate effects of reverberation
+
+@@html:<br />@@
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+@@html:<img src="figures/bl90.jpg" alt="BeoLab 90" width="60%"/>@@
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+**** Stereo setup
+     :PROPERTIES:
+     :CUSTOM_ID: stereo-setup
+     :END:
+
+Listener is placed in the *sweet-spot*.
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+@@html:<img src="figures/surroundSetup1.png" alt="Stereo" width="70%"/>@@
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+**** Surround setup
+     :PROPERTIES:
+     :CUSTOM_ID: surround-setup
+     :END:
+
+Listener is placed in the *sweet-spot*.
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+@@html:<img src="figures/surroundSetup2.png" alt="Surround" width="70%"/>@@
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+*** Stereo panning
+    :PROPERTIES:
+    :CUSTOM_ID: stereo-panning
+    :END:
+
+The recording engineer can place an audio source (e.g., a singer) in
+between the two loudspeakers by 1. changing the amplitudes of the source
+(amplitude panning) 2. changing the delay of the source (phase panning)
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+@@html:<img src="figures/surroundSetup1.png" alt="Stereo" width="40%"/>@@
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+**** Amplitude panning
+     :PROPERTIES:
+     :CUSTOM_ID: amplitude-panning
+     :END:
+
+Assume that we wish to playback the mono signal $x_n$ on two
+loudspeakers so that it sounds as if it is coming from a particular
+direction $\varphi$ relative to the listener.
+
+In amplitude panning, we can *only* change the amplitudes of the two
+loudspeaker signals - *left speaker*: playing $g_1 x_n$ - *right
+speaker*: playing $g_2 x_n$
+
+How do we choose $g_1$ and $g_2$?
+
+Many different solutions available (see book), but we will here describe
+one particular case of the *tangent panning law*.
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+@@html:<img src="figures/ap9StereoPanning.png" alt="Stereo panning" width="60%"/>@@
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+From the figure, we have that
+\begin{align}
+    g_1\boldsymbol{s}_1 &= g_1\begin{bmatrix}
+        \cos(\theta)\\
+        \sin(\theta)
+    \end{bmatrix}\\
+    g_2\boldsymbol{s}_2 &= g_2\begin{bmatrix}
+        \cos(\theta)\\
+        -\sin(\theta)
+    \end{bmatrix}\\
+    \boldsymbol{v} &= \begin{bmatrix}
+        \cos(\varphi)\\
+        \sin(\varphi)
+    \end{bmatrix}
+\end{align}
+
+By setting $\boldsymbol{v} = g_1\boldsymbol{s}_1+g_2\boldsymbol{s}_2$,
+we obtain the two equations
+\begin{align}
+    \cos(\varphi) &= (g_1+g_2)\cos(\theta)\\
+    \sin(\varphi) &= (g_1-g_2)\sin(\theta)
+\end{align}
+which have the solution
+\begin{align}
+    g_1 &= \frac{\cos(\varphi)}{2\cos(\theta)}+\frac{\sin(\varphi)}{2\sin(\theta)}\\
+    g_2 &= \frac{\cos(\varphi)}{2\cos(\theta)}-\frac{\sin(\varphi)}{2\sin(\theta)}\ .
+\end{align}
+Note that we obtain the *tangent panning law* if we divide the second
+equation from the top with the first equation from the top.
+
+ 
+
+#+BEGIN_SRC python :session :results output
+# %matplotlib inline
+import numpy as np
+import matplotlib.pyplot as plt
+import scipy.io.wavfile as wave
+import IPython.display as ipd
+
+def stereoTangentPanning(inputSignal, loudspeakerAngle, virtualSourceAngle):
+    c = np.cos(virtualSourceAngle)/(2*np.cos(loudspeakerAngle))
+    s = np.sin(virtualSourceAngle)/(2*np.sin(loudspeakerAngle))
+    leftSpeakerSignal = (c+s)*inputSignal
+    rightSpeakerSignal = (c-s)*inputSignal
+    return leftSpeakerSignal, rightSpeakerSignal
+#+END_SRC
+
+ 
+
+#+BEGIN_SRC python :session :results output
+samplingFreq, guitarSignal = wave.read('data/guitar.wav')
+guitarSignal = guitarSignal/2**15 # normalise
+# perform stereo panning
+loudspeakerAngle = 30*np.pi/180 # radians
+virtualSourceAngle = 0*np.pi/180 # radians
+leftSpeakerSignal, rightSpeakerSignal = stereoTangentPanning(guitarSignal, loudspeakerAngle, virtualSourceAngle)
+ipd.Audio([leftSpeakerSignal, rightSpeakerSignal], rate=samplingFreq)
+#+END_SRC
+
+ 
+
+#+BEGIN_SRC python :session :results output
+# linear panning from right to left
+nData = np.size(guitarSignal)
+virtualSourceAngles = np.arange(nData)*2*loudspeakerAngle/nData-loudspeakerAngle
+leftSpeakerSignal, rightSpeakerSignal = stereoTangentPanning(guitarSignal, loudspeakerAngle, virtualSourceAngles)
+ipd.Audio([leftSpeakerSignal, rightSpeakerSignal], rate=samplingFreq)
+#+END_SRC
+
+Other amplitude panning techniques exist (see the book): - The sine
+panning law - The tangent panning law with additional constraints
+
+Note that we can also delay the signals in the loudspeaker to make them
+appear closer or farther away. This is called *phase panning*.
+
+*** Summary
+    :PROPERTIES:
+    :CUSTOM_ID: summary
+    :END:
+
+1. We can make a set of stereo loudspeakers reproduce sound sources
+   placed between and behind the loudspeakers by
+
+-  *amplitude panning*: change the gains of the source when played back
+   by the two loudspeakers
+-  *phase panning*: change the delays of the source when played back by
+   the two loudspeakers

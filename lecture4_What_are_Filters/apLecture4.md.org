@@ -1,0 +1,470 @@
+* Lecture 4: What are filters?
+  :PROPERTIES:
+  :CUSTOM_ID: lecture-4-what-are-filters
+  :END:
+
+Audio Processing, MED4, Aalborg University, 2019
+
+By Jesper Kjær Nielsen (jkn@create.aau.dk), Audio Analysis Lab, Aalborg
+University.
+
+Last edited: 2019-03-12
+
+
+** Introduction to filtering
+   :PROPERTIES:
+   :CUSTOM_ID: introduction-to-filtering
+   :END:
+
+In the next 20 minutes, you will learn 
+
+- that you are already using filters in your everyday life 
+
+- how you can understand filtering in connection with audio
+
+*** Some filters from our everyday life:
+    :PROPERTIES:
+    :CUSTOM_ID: some-filters-from-our-everyday-life
+    :END:
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+**** What about filters for audio?
+     :PROPERTIES:
+     :CUSTOM_ID: what-about-filters-for-audio
+     :END:
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+**** Example: measuring speed using filtering
+     :PROPERTIES:
+     :CUSTOM_ID: example-measuring-speed-using-filtering
+     :END:
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+- Assume that we wish to show the *instantaneous speed* of a car to its
+  driver:
+- Unfortunately, we cannot measure the speed directly, but only the
+  driven distance $s(t)$ every $T_\text{s}$ seconds.
+- After sampling, the discrete-time signal describing the the driven
+  distance is $s_n=s(t_n)$.
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+To compute the *instantaneous speed* $v_n$ from $s_n$, we use that the
+speed of an object is *how much the object moves per unit time*. Thus,
+we could compute the *instantaneous speed* as $$
+    v_n = \frac{s_n-s_{n-1}}{T_\text{s}} = f_\text{s}(s_n-s_{n-1}) = f_\text{s}s_n-f_\text{s}s_{n-1}\ .
+$$
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+The computation of the instantaneous speed can be interpreted as a
+*filter* given by $$
+    v_n = f_\text{s}s_n-f_\text{s}s_{n-1}
+$$ and this is a so-called *difference equation*. - Filter input: the
+discrete-time signal $s_n$ (position) - Filter output: the discrete-time
+signal $v_n$ (speed) - Filtering operation: a function which maps the
+input signal into the output signal
+
+If we loook at the difference equation $$
+    v_n = f_\text{s}s_n-f_\text{s}s_{n-1}\ ,
+$$ we have to do three things to do filtering: 1. *multiply* numbers
+(e.g., $ax_n$) 2. *sum* numbers (e.g., $x_n+s_n$) 3. *delay* samples
+(e.g., $x_{n-m}$)
+
+We can also illustrate these three operations graphically.
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+The filter $$
+    v_n = f_\text{s}s_n-f_\text{s}s_{n-1}\ ,
+$$ can then be illustrated as
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+*** A digital filter
+    :PROPERTIES:
+    :CUSTOM_ID: a-digital-filter
+    :END:
+
+We have the following components in a digital filter: - *Filter input*:
+a discrete-time signal $x_n$ - *Filter output*: a discrete-time signal
+$y_n$ - *Filter operation*: a function
+$f(y_{n-1}, y_{n-2}, \ldots, y_{n-p}, x_n, x_{n-1}, x_{n-2}, \ldots, x_{n-q})$
+which computes the current output sample $y_n$ from - the current input
+sample $x_n$ and $q$ past input samples
+$x_{n-1}, x_{n-2}, \ldots, x_{n-q}$ and - the past $p$ output samples
+$y_{n-1}, y_{n-2}, \ldots, y_{n-p}$
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+Tip: Send an impulse $\delta_n$ or a phasor $\mathrm{e}^{j\omega n}$
+through the filter to get the impulse response and the frequency
+response, respectively. Moreover, a feedforward filter has the
+difference equation \begin{align}
+    y_n &= b_0x_n + b_1 x_{n-1} + \cdots + b_q x_{n-q} = \sum_{m=0}^{q} b_m x_{n-m}\ .
+\end{align}
+
+** Introduction to the feedback filter
+   :PROPERTIES:
+   :CUSTOM_ID: introduction-to-the-feedback-filter
+   :END:
+
+In the next 20 minutes, you will learn - what a feedback filter is -
+what the impulse response and frequency response of a feedback filter
+is - what a resonance filter is
+
+*** Feedback filter
+    :PROPERTIES:
+    :CUSTOM_ID: feedback-filter
+    :END:
+
+The difference equation of a feedback filter (with $q=1$) is
+\begin{align}
+    y_n &= b_0x_n + a_1y_{n-1} + \ldots + a_py_{n-p} = b_0x_n + \sum_{m=0}^{p} a_m y_{n-m}
+\end{align} where - $x_n$ is the input signal - $y_n$ is the output
+signal - $b_0, a_1, a_2, \ldots, a_p$ are *filter coefficients* - we
+often refer to the past values $y_{n-1}, y_{n-2}, \ldots, y_{n-p}$ as
+the *filter state*.
+
+--------------
+
+Note that general feedback filters can have $q>1$, but we wait with this
+general case until lecture 6.
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+*** Impulse response of a feedback filter
+    :PROPERTIES:
+    :CUSTOM_ID: impulse-response-of-a-feedback-filter
+    :END:
+
+**** Example: a simple filter
+     :PROPERTIES:
+     :CUSTOM_ID: example-a-simple-filter
+     :END:
+
+Let us look at the filter $$
+    y_n = x_n+a_1 y_{n-1}\ .
+$$ Thus, we have - $p=0$ and $q=1$ - $b_0=1$ - the filter state is
+$y_{n-1}$
+
+Let us try to send an impulse $$
+    \delta_n = \begin{cases}
+        1 & n=0\\
+        0 & \text{otherwise}
+    \end{cases}
+$$ through the filter.
+
+When we set $x_n=\delta_n$, we get the impulse response $h_n=y_n$ given
+by $$
+    h_n = \begin{cases}
+        a_1^n & n\geq 0\\
+        0 & \text{otherwise}
+    \end{cases}\ .
+$$ Note that $h_n$ never becones zero for $n\geq 0$. Therefore, feedback
+filters are referred to as *infinite impulse response* (IIR) filters. -
+Unlike an FIR filter, the impulse response of a general IIR filter is
+not simply linked to the filter coefficients.
+
+#+BEGIN_SRC ipython 
+  %matplotlib inline
+  import numpy as np
+  import matplotlib.pyplot as plt
+
+  def iirFiltering(filterCoefficients, inputSignal, filterState=None):
+      # NOTE: this is only a special case of an IIR filter where the there is no feedforward part,
+      # except for x_n which is unscaled (i.e., p=0 and b_0=1).
+      nData = np.size(inputSignal)
+      iirFilterOrder = np.size(filterCoefficients)
+      # set the filter state to zeros if not specified
+      if filterState is None:
+          filterState = np.zeros(iirFilterOrder)
+      # do the filtering
+      outputSignal = np.zeros(nData)
+      for n in np.arange(nData):
+          outputSignal[n] = inputSignal[n]
+          for m in np.arange(iirFilterOrder):
+              outputSignal[n] = outputSignal[n] + \
+                  filterCoefficients[m]*filterState[m]
+          filterState = np.r_[outputSignal[n],filterState[0:iirFilterOrder-1]]
+      return outputSignal, filterState
+#+END_SRC
+
+#+BEGIN_SRC ipython 
+  # compute the impulse response
+  nData = 25
+  impulse = np.r_[1, np.zeros(nData-1)]
+  samplingIndices = np.arange(nData)
+  filterCoefficients = np.array([0.8])
+  impulseResponse, filterState = iirFiltering(filterCoefficients, impulse)
+  # plot the results
+  plt.figure(figsize=(10,6))
+  plt.stem(samplingIndices, impulse,'b', markerfmt='bo', label="$\delta_n$")
+  plt.stem(samplingIndices, impulseResponse, 'r', markerfmt='rx', label="$h_n$")
+  plt.legend()
+  plt.xlim((samplingIndices[0]-0.1,samplingIndices[nData-1])),
+  plt.ylim((np.minimum(np.min(impulseResponse),0),np.max(impulseResponse)))
+  plt.xlabel('Sampling index [.]'), plt.ylabel('Amplitude [.]');
+#+END_SRC
+
+*** Frequency response of a feedback filter
+    :PROPERTIES:
+    :CUSTOM_ID: frequency-response-of-a-feedback-filter
+    :END:
+
+**** Example: a resonance filter
+     :PROPERTIES:
+     :CUSTOM_ID: example-a-resonance-filter
+     :END:
+
+Let us look at the filter $$
+    y_n = b_0x_n+a_1 y_{n-1}+a_2 y_{n-2}\ .
+$$ Thus, we have - $p=2$ and $q=0$ - the filter state is
+$y_{n-1}, y_{n-2}$
+
+For particular values of the filter coefficients, we obtain a *resonance
+filter* which we will talk more about later.
+
+Let us now try to send the phasor $\mathrm{e}^{j\omega n}$ through the
+filter.
+
+We set $x_n=\mathrm{e}^{j\omega n}$ and get \begin{align}
+    y_n &= b_0\mathrm{e}^{j\omega n} +a_1 y_{n-1}+a_2 y_{n-2}
+\end{align} which we can rewrite as $$
+    b_0\mathrm{e}^{j\omega n} = y_n - a_1 y_{n-1} - a_2 y_{n-2}\ .
+$$
+
+If we guess that the output signal is a multipication of the input
+phasor and the frequency response, i.e.,
+$y_n=H(\omega)\mathrm{e}^{j\omega n}$, we obtain \begin{align}
+    b_0\mathrm{e}^{j\omega n} &= H(\omega)\mathrm{e}^{j\omega n} - a_1 H(\omega)\mathrm{e}^{j\omega (n-1)} - a_2 H(\omega)\mathrm{e}^{j\omega (n-2)}\\
+    &= (1-a_1\mathrm{e}^{-j\omega }-a_2\mathrm{e}^{-j2\omega})H(\omega)\mathrm{e}^{j\omega n}
+\end{align} from which we get that $$
+    H(\omega) = \frac{b_0}{1-a_1\mathrm{e}^{-j\omega }-a_2\mathrm{e}^{-j2\omega}}\ .
+$$ The amplitude response $|H(\omega)|$ and the phase response
+$\angle H(\omega)$ are defined in exactly the same way as for the
+feedforward filter.
+
+**** Frequency response of a general feedback filter
+     :PROPERTIES:
+     :CUSTOM_ID: frequency-response-of-a-general-feedback-filter
+     :END:
+
+A filter with the difference equation \begin{align}
+    y_n &= b_0x_n + a_1y_{n-1} + \ldots + a_py_{n-q} = b_0x_0 + \sum_{m=0}^{p} a_m y_{n-m}
+\end{align} has the frequency response $$
+    H(\omega) = \frac{b_0}{1-\sum_{m=1}^p a_m\mathrm{e}^{-j\omega m}}\ .
+$$
+
+*** Resonance filter
+    :PROPERTIES:
+    :CUSTOM_ID: resonance-filter
+    :END:
+
+Assume that we can write the frequency response of a feedback filter as
+$$
+    H(\omega) = \frac{b_0}{(1-p_1\mathrm{e}^{-j\omega})(1-p_1^*\mathrm{e}^{-j\omega})}
+$$ where $p_1$ is a so-called *pole* which we are going to talk more
+about in lecture 6.
+
+A pole is a complex number so we can write it in a polar form as
+\begin{align}
+    p_1 &= R\mathrm{e}^{j\theta}\\
+    p_1^* &= R\mathrm{e}^{-j\theta}
+\end{align} where $R$ is the magnitude and $\theta$ an angle.
+
+If we insert these expression for $p_1$ and $p_1^*$ in the frequency
+response, we obtain \begin{align}
+    H(\omega) &= \frac{b_0}{(1-R\mathrm{e}^{j\theta}\mathrm{e}^{-j\omega})(1-R\mathrm{e}^{-j\theta}\mathrm{e}^{-j\omega})}\\
+    &= \frac{b_0}{1-2R\cos(\theta)\mathrm{e}^{-j\omega}+R^2\mathrm{e}^{-j2\omega}}\ .
+\end{align}
+
+We now see that the resonance filter has filter coefficients
+\begin{align}
+    a_1 &= 2R\cos(\theta)\\
+    a_2 &= -R^2\ .
+\end{align}
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+We now wish to choose $b_0$, $R$, and $\theta$ so that we get - the
+desired center frequency $\omega_\text{c}$ - the desired bandwidth
+$B_\text{w}$ - the desired gain at the center frequency
+
+Unfortunately, it is a bit complicated to show, but it can be shown that
+\begin{align}
+    \omega_\text{c} &= \arccos\left(\frac{1+R^2}{2R}\cos(\theta)\right)\ ,\quad\text{if }\cos(\theta)\leq\frac{2R}{1+R^2}\\
+    B_\text{w} &\approx 2-2R\\
+    b_0 &= (1-R^2)\sin(\theta)\ .
+\end{align}
+
+From these equations, we can compute the values of $b_0$, $R$, and
+$\theta$ as \begin{align}
+    R &\approx \frac{2-B_\text{w}}{2}\\
+    \theta &= \arccos\left(\frac{2R}{1+R^2}\cos(\omega_\text{c})\right)\\
+    b_0 &= (1-R^2)\sin(\theta)\ .
+\end{align}
+
+#+BEGIN_SRC ipython 
+  # %matplotlib inline
+  import numpy as np
+  import matplotlib.pyplot as plt
+
+  def resonanceFreqResp(centerFreq, bandwidth, freqGrid):
+      nFreqs = np.size(freqGrid)
+      poleRadius = (2-bandwidth)/2
+      poleAngle = np.arccos(2*poleRadius*np.cos(centerFreq)/(1+poleRadius**2))
+      gain = (1-poleRadius**2)*np.sin(poleAngle)
+      iirCoefficients = np.array([2*poleRadius*np.cos(poleAngle), -poleRadius**2])
+      freqResp = gain/(1-2*poleRadius*np.cos(poleAngle)*np.exp(-1j*freqGrid)+poleRadius**2*np.exp(-1j*2*freqGrid))
+      return freqResp
+#+END_SRC
+
+#+BEGIN_SRC ipython 
+  # compute the frequency response
+  nFreqs = 1000
+  samplingFreq = 1000;
+  digFreqGrid = 2*np.pi*np.arange(nFreqs)/nFreqs
+  freqGrid = digFreqGrid*samplingFreq/(2*np.pi)
+  centerFreq = 2*np.pi*100/samplingFreq
+  bandwidth = 2*np.pi*50/samplingFreq
+  freqResp = resonanceFreqResp(centerFreq, bandwidth, digFreqGrid)
+  ampResp = np.abs(freqResp)
+  phaseResp = np.angle(freqResp)
+#+END_SRC
+
+#+BEGIN_SRC ipython 
+  # plot the results
+  plt.figure(figsize=(10,6))
+  plt.subplot(2,1,1)
+  plt.plot(freqGrid, ampResp, linewidth=2)
+  plt.xlim((freqGrid[0],freqGrid[nFreqs-1])), plt.ylim((0,1.1*np.max(ampResp)))
+  plt.xlabel('Frequency [rad/sample]'), plt.ylabel('Amplitude response [.]');
+  plt.subplot(2,1,2)
+  plt.plot(freqGrid, phaseResp, linewidth=2)
+  plt.xlim((freqGrid[0],freqGrid[nFreqs-1])), plt.ylim((-np.pi,np.pi))
+  plt.xlabel('Frequency [Hz]'), plt.ylabel('Phase response [.]');
+#+END_SRC
+
+*** Summary
+    :PROPERTIES:
+    :CUSTOM_ID: summary
+    :END:
+
+1. A feedback filter (with no feedforward part, i.e., $q=0$) has the
+   difference equation \begin{align}
+    y_n &= b_0x_n + a_1y_{n-1} + \ldots + a_py_{n-p} = b_0x_n + \sum_{m=0}^{p} a_m y_{n-m}\ .
+   \end{align}
+2. The feedback filter is often referred to as an *infinite impulse
+   response* (IIR) filter since its output never becomes zero for a
+   finite sampling index.
+3. The frequency response of an IIR filter (with $q=0$) is $$
+    H(\omega) = \frac{b_0}{1-\sum_{m=1}^p a_m\mathrm{e}^{-j\omega m}}\ .
+   $$
+4. A resonance filter is a special kind of filter with the difference
+   equation \begin{align}
+    y_n &= b_0x_n + 2R\cos(\theta)y_{n-1} - R^2y_{n-2}\ .
+   \end{align}

@@ -1,0 +1,223 @@
+#+TITLE: Spatial Sound Effects: Panning
+#+AUTHOR: Jesper Kjær Nielsen (jkn@create.aau.dk), Cumhur Erkut (cer@create.aau.dk)
+#+DATE: <2019-07-14 Sun>
+#+OPTIONS: toc:nil todo:nil title:t AUTHOR:Test DATE:<2019-07-14 Sun> TITLE:Test2 p:nil num:t d:nil
+
+* Stereo panning techniques
+  :PROPERTIES:
+  :CUSTOM_ID: stereo-panning-techniques
+  :END:
+
+In the next 20 minutes, you will learn 
+
+- what stereo is
+
+- what the purpose of a pair of stereo loudspeakers are
+
+- how loudspeakers can play back sources at different positions
+
+
+** Reproducing sound using loudspeakers
+   :PROPERTIES:
+   :CUSTOM_ID: reproducing-sound-using-loudspeakers
+   :END:
+
+How do we make loudspeakers reproduce the sound from, e.g., a symphony orchestra?
+
+@@html:<br />@@
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+@@html:<img src="figures/orchestra.jpg" alt="Orchestra" width="80%"/>@@
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+A listener should ideally hear what the sound engineer heard in the recording studio. To do that, we have to 1. place listener in the sweet-spot 2. attenuate effects of reverberation
+
+@@html:<br />@@
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+@@html:<img src="figures/bl90.jpg" alt="BeoLab 90" width="60%"/>@@
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+*** Stereo setup
+    :PROPERTIES:
+    :CUSTOM_ID: stereo-setup
+    :END:
+
+Listener is placed in the *sweet-spot*.
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+@@html:<img src="figures/surroundSetup1.png" alt="Stereo" width="70%"/>@@
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+*** Surround setup
+    :PROPERTIES:
+    :CUSTOM_ID: surround-setup
+    :END:
+
+Listener is placed in the *sweet-spot*.
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+@@html:<img src="figures/surroundSetup2.png" alt="Surround" width="70%"/>@@
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+
+** Stereo panning
+   :PROPERTIES:
+   :CUSTOM_ID: stereo-panning
+   :END:
+
+The recording engineer can place an audio source (e.g., a singer) in
+between the two loudspeakers by 
+
+1. changing the amplitudes of the source (amplitude panning) 
+   
+
+2. changing the delay of the source (phase panning)
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+@@html:<img src="figures/surroundSetup1.png" alt="Stereo" width="40%"/>@@
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+*** Amplitude panning
+    :PROPERTIES:
+    :CUSTOM_ID: amplitude-panning
+    :END:
+
+Assume that we wish to playback the mono signal $x_n$ on two loudspeakers so that it sounds as if it is coming from a particular direction $\varphi$ relative to the listener.
+
+In amplitude panning, we can *only* change the amplitudes of the two loudspeaker signals 
+
+- *left speaker*: playing $g_1 x_n$ 
+- *right speaker*: playing $g_2 x_n$
+
+How do we choose $g_1$ and $g_2$?
+
+Many different solutions available (see the book), but we will here describe a particular case of the *tangent panning law*.
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+@@html:<img src="figures/ap9StereoPanning.png" alt="Stereo panning" width="60%"/>@@
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+From the figure, we have that
+\begin{align}
+    g_1\boldsymbol{s}_1 &= g_1\begin{bmatrix}
+        \cos(\theta)\\
+        \sin(\theta)
+    \end{bmatrix}\\
+    g_2\boldsymbol{s}_2 &= g_2\begin{bmatrix}
+        \cos(\theta)\\
+        -\sin(\theta)
+    \end{bmatrix}\\
+    \boldsymbol{v} &= \begin{bmatrix}
+        \cos(\varphi)\\
+        \sin(\varphi)
+    \end{bmatrix}
+\end{align}
+
+By setting $\boldsymbol{v} = g_1\boldsymbol{s}_1+g_2\boldsymbol{s}_2$,
+we obtain the two equations
+\begin{align}
+    \cos(\varphi) &= (g_1+g_2)\cos(\theta)\\
+    \sin(\varphi) &= (g_1-g_2)\sin(\theta)
+\end{align}
+which have the solution
+\begin{align}
+    g_1 &= \frac{\cos(\varphi)}{2\cos(\theta)}+\frac{\sin(\varphi)}{2\sin(\theta)}\\
+    g_2 &= \frac{\cos(\varphi)}{2\cos(\theta)}-\frac{\sin(\varphi)}{2\sin(\theta)}\ .
+\end{align}
+Note that we obtain the *tangent panning law* if we divide the second
+equation from the top with the first equation from the top.
+
+ 
+
+#+BEGIN_SRC ipython :session :results output
+# %matplotlib inline
+import numpy as np
+import matplotlib.pyplot as plt
+import scipy.io.wavfile as wave
+import IPython.display as ipd
+
+def stereoTangentPanning(inputSignal, loudspeakerAngle, virtualSourceAngle):
+    c = np.cos(virtualSourceAngle)/(2*np.cos(loudspeakerAngle))
+    s = np.sin(virtualSourceAngle)/(2*np.sin(loudspeakerAngle))
+    leftSpeakerSignal = (c+s)*inputSignal
+    rightSpeakerSignal = (c-s)*inputSignal
+    return leftSpeakerSignal, rightSpeakerSignal
+#+END_SRC
+
+ 
+
+#+BEGIN_SRC ipython :session :results output
+samplingFreq, guitarSignal = wave.read('data/guitar.wav')
+guitarSignal = guitarSignal/2**15 # normalise
+# perform stereo panning
+loudspeakerAngle = 30*np.pi/180 # radians
+virtualSourceAngle = 0*np.pi/180 # radians
+leftSpeakerSignal, rightSpeakerSignal = stereoTangentPanning(guitarSignal, loudspeakerAngle, virtualSourceAngle)
+ipd.Audio([leftSpeakerSignal, rightSpeakerSignal], rate=samplingFreq)
+#+END_SRC
+
+ 
+
+#+BEGIN_SRC ipython :session :results output
+# linear panning from right to left
+nData = np.size(guitarSignal)
+virtualSourceAngles = np.arange(nData)*2*loudspeakerAngle/nData-loudspeakerAngle
+leftSpeakerSignal, rightSpeakerSignal = stereoTangentPanning(guitarSignal, loudspeakerAngle, virtualSourceAngles)
+ipd.Audio([leftSpeakerSignal, rightSpeakerSignal], rate=samplingFreq)
+#+END_SRC
+
+Other amplitude panning techniques exist (see the book): 
+
+- The sine panning law 
+- The tangent panning law with additional constraints
+
+Note that we can also delay the signals in the loudspeaker to make them appear closer or farther away. This is called *phase panning*.
+
+
+** DONE Summary
+   CLOSED: [2019-07-14 Sun 11:45]
+   :PROPERTIES:
+   :CUSTOM_ID: summary
+   :END:
+
+1. We can make a set of stereo loudspeakers reproduce sound sources placed between and behind the loudspeakers by
+
+-  *amplitude panning*: change the gains of the source when played back by the two loudspeakers
+
+-  *phase panning*: change the delays of the source when played back by the two loudspeakers
