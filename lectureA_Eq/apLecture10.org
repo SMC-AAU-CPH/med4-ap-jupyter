@@ -1,0 +1,943 @@
+#+TITLE: apLecture10
+
+* Lecture 10: Audio Equalizers
+  :PROPERTIES:
+  :CUSTOM_ID: lecture-10-audio-equalizers
+  :END:
+
+Audio Processing, MED4, Aalborg University, 2020
+
+By 
+
+- Jesper Kjær Nielsen (jkn@create.aau.dk), Audio Analysis Lab,
+Aalborg University, and 
+- Cumhur Erkut (cer@create.aau.dk), Multisensory
+Experience Lab, Aalborg University
+
+Last edited: 2020-03-29
+
+#+BEGIN_HTML
+  <h1>
+#+END_HTML
+
+Table of Contents
+
+#+BEGIN_HTML
+  </h1>
+#+END_HTML
+
+#+BEGIN_HTML
+  <ul class="toc-item">
+#+END_HTML
+
+#+BEGIN_HTML
+  <li>
+#+END_HTML
+
+1  Introduction
+
+#+BEGIN_HTML
+  <ul class="toc-item">
+#+END_HTML
+
+#+BEGIN_HTML
+  <li>
+#+END_HTML
+
+1.1  Why do we need audio equalizers?
+
+#+BEGIN_HTML
+  </li>
+#+END_HTML
+
+#+BEGIN_HTML
+  <li>
+#+END_HTML
+
+1.2  A typical parametric equalizer
+
+#+BEGIN_HTML
+  </li>
+#+END_HTML
+
+#+BEGIN_HTML
+  <li>
+#+END_HTML
+
+1.3  Summary
+
+#+BEGIN_HTML
+  </li>
+#+END_HTML
+
+#+BEGIN_HTML
+  <li>
+#+END_HTML
+
+1.4  Active 5 minutes break
+
+#+BEGIN_HTML
+  </li>
+#+END_HTML
+
+#+BEGIN_HTML
+  </ul>
+#+END_HTML
+
+#+BEGIN_HTML
+  </li>
+#+END_HTML
+
+#+BEGIN_HTML
+  <li>
+#+END_HTML
+
+2  Notch and peak filters
+
+#+BEGIN_HTML
+  <ul class="toc-item">
+#+END_HTML
+
+#+BEGIN_HTML
+  <li>
+#+END_HTML
+
+2.1  Notch (bandstop) filter
+
+#+BEGIN_HTML
+  </li>
+#+END_HTML
+
+#+BEGIN_HTML
+  <li>
+#+END_HTML
+
+2.2  Peak (bandpass) filter
+
+#+BEGIN_HTML
+  </li>
+#+END_HTML
+
+#+BEGIN_HTML
+  <li>
+#+END_HTML
+
+2.3  Summary
+
+#+BEGIN_HTML
+  </li>
+#+END_HTML
+
+#+BEGIN_HTML
+  </ul>
+#+END_HTML
+
+#+BEGIN_HTML
+  </li>
+#+END_HTML
+
+#+BEGIN_HTML
+  <li>
+#+END_HTML
+
+3  Parametric equalizer filter
+
+#+BEGIN_HTML
+  <ul class="toc-item">
+#+END_HTML
+
+#+BEGIN_HTML
+  <li>
+#+END_HTML
+
+3.1  Summary
+
+#+BEGIN_HTML
+  </li>
+#+END_HTML
+
+#+BEGIN_HTML
+  <li>
+#+END_HTML
+
+3.2  Active 5 minutes break
+
+#+BEGIN_HTML
+  </li>
+#+END_HTML
+
+#+BEGIN_HTML
+  </ul>
+#+END_HTML
+
+#+BEGIN_HTML
+  </li>
+#+END_HTML
+
+#+BEGIN_HTML
+  <li>
+#+END_HTML
+
+4  Shelving filters
+
+#+BEGIN_HTML
+  <ul class="toc-item">
+#+END_HTML
+
+#+BEGIN_HTML
+  <li>
+#+END_HTML
+
+4.1  Low frequency shelving filter
+
+#+BEGIN_HTML
+  </li>
+#+END_HTML
+
+#+BEGIN_HTML
+  <li>
+#+END_HTML
+
+4.2  High frequency shelving filter
+
+#+BEGIN_HTML
+  </li>
+#+END_HTML
+
+#+BEGIN_HTML
+  <li>
+#+END_HTML
+
+4.3  Multi-band parametric equalizer
+
+#+BEGIN_HTML
+  </li>
+#+END_HTML
+
+#+BEGIN_HTML
+  <li>
+#+END_HTML
+
+4.4  Summary
+
+#+BEGIN_HTML
+  </li>
+#+END_HTML
+
+#+BEGIN_HTML
+  </ul>
+#+END_HTML
+
+#+BEGIN_HTML
+  </li>
+#+END_HTML
+
+#+BEGIN_HTML
+  </ul>
+#+END_HTML
+
+** Introduction
+   :PROPERTIES:
+   :CUSTOM_ID: introduction
+   :END:
+
+In the next 20 minutes, you will learn - what an audio equalizer is -
+what it is used for - what a parametric equalizer is
+
+*** Why do we need audio equalizers?
+    :PROPERTIES:
+    :CUSTOM_ID: why-do-we-need-audio-equalizers
+    :END:
+
+Many phenomena change the sound before it reaches our ears: -
+amplifier - loudspeaker - room acoustics - our hearing - etc.
+
+The main objective of audio equalizers is to *invert (some of) these
+changes*!
+
+**** Example: hard surfaces boost the bass of a loudspeaker
+     :PROPERTIES:
+     :CUSTOM_ID: example-hard-surfaces-boost-the-bass-of-a-loudspeaker
+     :END:
+
+We need an equalizer to compensate for the boost in bass.
+
+ 
+
+#+BEGIN_SRC python :session :results output
+from IPython.display import Image
+myWidth = 768
+Image('figures/ap10BassBoost.png',width=myWidth)
+#+END_SRC
+
+**** Example: loudspeaker tuning
+     :PROPERTIES:
+     :CUSTOM_ID: example-loudspeaker-tuning
+     :END:
+
+We need to tune the filters in the loudspeaker so that the listener
+hears what is intended.
+
+ 
+
+#+BEGIN_SRC python :session :results output
+Image('figures/ap10ThreeWaySpeaker.png',width=myWidth)
+#+END_SRC
+
+**** Example: equalizing compensation for hearing loss
+     :PROPERTIES:
+     :CUSTOM_ID: example-equalizing-compensation-for-hearing-loss
+     :END:
+
+ 
+
+#+BEGIN_SRC python :session :results output
+Image('figures/hearingThresholdVsAge.png',width=myWidth)
+#+END_SRC
+
+*** A typical parametric equalizer
+    :PROPERTIES:
+    :CUSTOM_ID: a-typical-parametric-equalizer
+    :END:
+
+A common audio equalizer is a *parametric equalizer* which functions
+by - dividing the frequency range into a number of bands - apply filters
+in each band which can amplify/attenuate the frequency content in this
+band --- Note that so-called graphic equalizers is an alternative to the
+parametric equalizer, but we will not cover that here.
+
+ 
+
+#+BEGIN_SRC python :session :results output
+Image('figures/midasEqualizer.jpg',width=myWidth)
+#+END_SRC
+
+Example of a block diagram of a parametric equalizer.
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+The filter in each band of the parametric equalizer is called a
+*parametric equalizer filter*. It can be either a - *first and last
+band*: lowpass or highpass filter with adjustable cut-off frequency and
+gain (a *shelving filter*) - *bands in the middle*: combination of a
+bandpass (peak) or a bandstop (notch) filter with adjustable center
+frequency and bandwidth
+
+Note that - both of these filters can be implemented using *a second
+order feedback (IIR) filter* - we will go more into depth with these two
+kinds of parametric equalizer filters later
+
+*** Summary
+    :PROPERTIES:
+    :CUSTOM_ID: summary
+    :END:
+
+1. Audio equalizers are useful in many applications such as room
+   compensation and the tuning of hearing aids
+2. A parametric equaliser is used to amplify/attenuate the frequency
+   content within different bands
+
+*** Active 5 minutes break
+    :PROPERTIES:
+    :CUSTOM_ID: active-5-minutes-break
+    :END:
+
+As we see later, the basic ingredient is a *parametric equalizer filter*
+resulting in the *difference equation* $$
+    y_n = b_0x_n + b_1 x_{n-1} + b_2 x_{n-2} + a_1y_{n-1} + a_2 y_{n-2}
+$$ 1. Is this a feedforward or a feedback filter? 2. What are the
+feedforward and feedback filter coefficients? 3. Sketch the difference
+equations using the delay, summation, and multipication blocks.
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+** Notch and peak filters
+   :PROPERTIES:
+   :CUSTOM_ID: notch-and-peak-filters
+   :END:
+
+In the next 20 minutes, you will learn - how a parametric equalizer
+filter can be designed using a notch (bandstop) and peak (bandpass)
+filter - how the notch filter is designed and controlled - how the peak
+filter is designed and controlled
+
+The *transfer function* of the parametric equalizer filter
+$H_\text{eq}(z)$ is $$
+    H_\text{eq}(z) = G_0H_\text{notch}(z) + G H_\text{peak}(z)\ .
+$$
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+*** Notch (bandstop) filter
+    :PROPERTIES:
+    :CUSTOM_ID: notch-bandstop-filter
+    :END:
+
+We will use the following notation: - $\omega_1$ and $\omega_2$: lower
+and upper cutoff frequencies in radians/sample -
+$\omega_0=\sqrt{\omega_1\omega_2}$: center frequency in radians/sample -
+$\Delta\omega=\omega_2-\omega_1$: bandwidth in radians/sample -
+$G_\text{B}$: gain at the cutoff frequencies.
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+It can be shown that the transfer function of a notch filter is given by
+$$
+    H_\text{notch}(z) = b\frac{1-2\cos(\omega_0)z^{-1}+z^{-2}}{1-2b\cos(\omega_0)z^{-1}+(2b-1)z^{-2}}
+$$ where - $\omega_0$ is the center frequency in radians/sample -
+$b=(1+\beta)^{-1}$ where $$
+    \beta = \frac{\sqrt{1-G_\text{B}^2}}{G_\text{B}}\tan(\Delta\omega/2)
+$$ - $G_\text{B}$ is the gain at the cutoff frequencies $\omega_1$ and
+$\omega_2$ - $\Delta\omega$ is the bandwidth (i.e., $\omega_2-\omega_1$)
+in radians/sample.
+
+The notch filter results in the difference equation $$
+    y_n = bx_n -2b\cos(\omega_0)x_{n-1}+bx_{n-2} + 2b\cos(\omega_0)y_{n-1} - (2b-1) y_{n-2}
+$$
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+ 
+
+#+BEGIN_SRC python :session :results output
+%matplotlib inline
+import numpy as np
+import matplotlib.pyplot as plt
+import scipy.signal as sig
+
+def computeNotchFilterParameters(digCenterFreq, digBandwidth, cutoffGain):
+    beta = (np.sqrt(1-cutoffGain**2)/cutoffGain)*np.tan(digBandwidth/2)
+    b0 = 1/(1+beta)
+    b1 = -2*b0*np.cos(digCenterFreq)
+    b2 = b0
+    a1 = -b1
+    a2 = -(2*b0-1)
+    feedforwardParams = np.array([b0, b1, b2])
+    feedbackParams = np.array([a1, a2])
+    return feedforwardParams, feedbackParams
+#+END_SRC
+
+ 
+
+#+BEGIN_SRC python :session :results output
+samplingFreq = 44100 # Hz
+centerFreq = 1000 # Hz
+bandwidth = 250 # Hz
+cutoffGain = np.sqrt(0.5)
+nDtft = 2048
+feedforwardParams, feedbackParams = computeNotchFilterParameters(centerFreq*2*np.pi/samplingFreq, \
+    bandwidth*2*np.pi/samplingFreq, cutoffGain)
+digFreqVector, freqResp = sig.freqz(feedforwardParams, np.r_[1,-feedbackParams],nDtft)
+freqVector = digFreqVector*samplingFreq/(2*np.pi)
+plt.figure(figsize=(14,6))
+plt.plot(freqVector, np.abs(freqResp))
+plt.xlim((0,freqVector[-1])), plt.ylim((0,1)), plt.xlabel('$f$ [Hz]'), plt.ylabel('$|H_{notch}(f)|$');
+#+END_SRC
+
+*** Peak (bandpass) filter
+    :PROPERTIES:
+    :CUSTOM_ID: peak-bandpass-filter
+    :END:
+
+We will use the following notation: - $\omega_1$ and $\omega_2$: lower
+and upper cutoff frequencies in radians/sample -
+$\omega_0=\sqrt{\omega_1\omega_2}$: center frequency in radians/sample -
+$\Delta\omega=\omega_2-\omega_1$: bandwidth in radians/sample -
+$G_\text{B}$: gain at the cutoff frequencies.
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+It can be shown that the transfer function of a notch filter is given by
+$$
+    H_\text{peak}(z) = (1-b)\frac{1-z^{-2}}{1-2b\cos(\omega_0)z^{-1}+(2b-1)z^{-2}}
+$$ where - $\omega_0$ is the center frequency in radians/sample -
+$b=(1+\beta)^{-1}$ where $$
+    \beta = \frac{G_\text{B}}{\sqrt{1-G_\text{B}^2}}\tan(\Delta\omega/2)
+$$ - $G_\text{B}$ is the gain at the cutoff frequencies $\omega_1$ and
+$\omega_2$ - $\Delta\omega$ is the bandwidth (i.e., $\omega_2-\omega_1$)
+in radians/sample.
+
+The peak filter results in the difference equation $$
+    y_n = (1-b)x_n - (1-b)x_{n-2} + 2b\cos(\omega_0)y_{n-1} - (2b-1) y_{n-2}
+$$
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+ 
+
+#+BEGIN_SRC python :session :results output
+%matplotlib inline
+import numpy as np
+import matplotlib.pyplot as plt
+import scipy.signal as sig
+
+def computePeakFilterParameters(digCenterFreq, digBandwidth, cutoffGain):
+    beta = (cutoffGain/np.sqrt(1-cutoffGain**2))*np.tan(digBandwidth/2)
+    b = 1/(1+beta)
+    b0 = 1-b
+    b1 = 0
+    b2 = -b0
+    a1 = 2*b*np.cos(digCenterFreq)
+    a2 = -(2*b-1)
+    feedforwardParams = np.array([b0, b1, b2])
+    feedbackParams = np.array([a1, a2])
+    return feedforwardParams, feedbackParams
+#+END_SRC
+
+ 
+
+#+BEGIN_SRC python :session :results output
+samplingFreq = 44100 # Hz
+centerFreq = 1000 # Hz
+bandwidth = 2500 # Hz
+cutoffGain = np.sqrt(0.5)
+nDtft = 2048
+feedforwardParams, feedbackParams = computePeakFilterParameters(centerFreq*2*np.pi/samplingFreq, \
+    bandwidth*2*np.pi/samplingFreq, cutoffGain)
+digFreqVector, freqResp = sig.freqz(feedforwardParams, np.r_[1,-feedbackParams],nDtft)
+freqVector = digFreqVector*samplingFreq/(2*np.pi)
+plt.figure(figsize=(14,6))
+plt.plot(freqVector, np.abs(freqResp))
+plt.xlim((0,freqVector[-1])), plt.ylim((0,1)), plt.xlabel('$f$ [Hz]'), plt.ylabel('$|H_{peak}(f)|$');
+#+END_SRC
+
+*** Summary
+    :PROPERTIES:
+    :CUSTOM_ID: summary
+    :END:
+
+1. A notch (bandstop) filter can be used to remove frequencies
+
+   #+BEGIN_HTML
+     <center>
+   #+END_HTML
+
+   #+BEGIN_HTML
+     </center>
+   #+END_HTML
+
+2. A peak (bandpass) filter can be used to remove frequencies
+
+   #+BEGIN_HTML
+     <center>
+   #+END_HTML
+
+   #+BEGIN_HTML
+     </center>
+   #+END_HTML
+
+** Parametric equalizer filter
+   :PROPERTIES:
+   :CUSTOM_ID: parametric-equalizer-filter
+   :END:
+
+In the next 20 minutes, you will learn - how we can combine a notch and
+a peak filter into a parametric equalizer filter
+
+We can write the transfer function of the peak and notch filters as
+\begin{align}
+    H_\text{notch}(z) &= \frac{A_\text{notch}(z)}{B_\text{notch}(z)}\\
+    H_\text{peak}(z) &= \frac{A_\text{peak}(z)}{B_\text{peak}(z)}
+\end{align} where \begin{align}
+    A_\text{notch}(z) &= b_\text{notch}(1-2\cos(\omega_0)z^{-1}+z^{-2})\\
+    B_\text{notch}(z) &= 1-2b_\text{notch}\cos(\omega_0)z^{-1}+(2b_\text{notch}-1)z^{-2}\\
+    A_\text{peak}(z) &= (1-b_\text{peak})(1-z^{-2})\\
+    B_\text{peak}(z) &= 1-2b_\text{peak}\cos(\omega_0)z^{-1}+(2b_\text{peak}-1)z^{-2}\ .
+\end{align}
+
+Recall that the *transfer function* of the parametric equalizer filter
+$H_\text{eq}(z)$ is $$
+    H_\text{eq}(z) = G_0H_\text{notch}(z) + G H_\text{peak}(z)\ .
+$$
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+Note that - $G_0$ (which is sometimes called the level) is often set to
+1 - $G>G_0$ results in a boost of some frequencies - $G<G_0$ results in
+a cut of some frequencies
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+We have \begin{align}
+    H_\text{eq}(z) &= G_0H_\text{notch}(z) + G H_\text{peak}(z)\\
+    &= \frac{G_0A_\text{notch}(z)B_\text{peak}(z)+GA_\text{peak}(z)B_\text{notch}(z)}{B_\text{notch}(z)B_\text{peak}(z)}
+\end{align} with three interesting special cases: 1. $G_0=G=1$: the
+signal passes unaltered, i.e., $H_\text{eq}(z)=1$ 2. $G_0=1$ and $G=0$:
+the parametric equalizer filter is a notch filter, i.e.,
+$H_\text{eq}(z)=H_\text{notch}(z)$ 3. $G_0=0$ and $G=1$: the parametric
+equalizer filter is a peak filter, i.e.,
+$H_\text{eq}(z)=H_\text{peak}(z)$
+
+After a lot of math, it can be shown that $$
+    H_\text{eq}(z) = \frac{b_0 + b_1z^{-1}+b_2z^{-2}}{1 - a_1z^{-1}-a_2z^{-2}}
+$$ where we have defined \begin{alignat}{2}
+    b_0 &= \frac{G_0+G\alpha}{1+\alpha}\ , &\qquad b_1 &= \frac{-2G_0\cos(\omega_0)}{1+\alpha}\\
+    b_2 &= \frac{G_0-G\alpha}{1+\alpha}\ , &\qquad a_1 &= \frac{2\cos(\omega_0)}{1+\alpha}\\
+    a_2 &= -\frac{1-\alpha}{1+\alpha}\ , &\qquad \alpha &= \sqrt{\frac{G_\text{B}^2-G_0^2}{G^2-G_\text{B}^2}}\tan(\Delta\omega/2)\ .
+\end{alignat}
+
+**** Example: design of parametric equalizer filter
+     :PROPERTIES:
+     :CUSTOM_ID: example-design-of-parametric-equalizer-filter
+     :END:
+
+Assume that the user can control the three parameters 1. center
+frequency $\omega_0$ 2. bandwidth $\Delta\omega$ 3. boost/cut $G$
+
+When design the parametric equalizer filter as 1. calculate the cutoff
+gain as either $$
+    G_\text{B}^2 = G_0G \quad\text{or}\quad G_\text{B} = G_0^2/2+G^2/2
+$$ with (typically) $G_0=1$. 2. Compute $\alpha$ and the filter
+coefficients $b_0$, $b_1$, $b_2$, $a_1$, and $a_2$ (see above)
+
+The parametric equalizer filter results in the difference equation $$
+    y_n = b_0x_n + b_1 x_{n-1} + b_2 x_{n-2} + a_1y_{n-1} + a_2 y_{n-2}
+$$
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+ 
+
+#+BEGIN_SRC python :session :results output
+def paramEqFilterCoefficients(digCenterFreq, digBandwidth, gain, level=1):
+    if gain == level:
+        feedforwardParams = np.array([1, 0, 0])
+        feedbackParams = np.array([0, 0])
+    else:
+        cutoffGain = np.sqrt((gain**2+level**2)/2) # could also be the geometric mean instead
+        alpha = np.sqrt((cutoffGain**2-level**2)/(gain**2-cutoffGain**2))*np.tan(digBandwidth/2)
+        b0 = (level+gain*alpha)/(1+alpha)
+        b1 = -2*level*np.cos(digCenterFreq)/(1+alpha)
+        b2 = (level-gain*alpha)/(1+alpha)
+        a1 = 2*np.cos(digCenterFreq)/(1+alpha)
+        a2 = -(1-alpha)/(1+alpha)
+        feedforwardParams = np.array([b0, b1, b2])
+        feedbackParams = np.array([a1, a2])
+    return feedforwardParams, feedbackParams
+#+END_SRC
+
+ 
+
+#+BEGIN_SRC python :session :results output
+samplingFreq = 44100 # Hz
+centerFreq = 1000 # Hz
+bandwidth = 2500 # Hz
+gain = 1
+nDtft = 2048
+feedforwardParams, feedbackParams = paramEqFilterCoefficients(centerFreq*2*np.pi/samplingFreq, \
+    bandwidth*2*np.pi/samplingFreq, gain)
+digFreqVector, freqResp = sig.freqz(feedforwardParams, np.r_[1,-feedbackParams],nDtft)
+freqVector = digFreqVector*samplingFreq/(2*np.pi)
+plt.figure(figsize=(14,6))
+plt.plot(freqVector, np.abs(freqResp))
+plt.xlim((0,freqVector[-1])), plt.ylim((0,2)), plt.xlabel('$f$ [Hz]'), plt.ylabel('$|H_{notch}(f)|$');
+#+END_SRC
+
+*** Summary
+    :PROPERTIES:
+    :CUSTOM_ID: summary
+    :END:
+
+1. A parametric equalizer filter is a way of boosting or cutting some
+   frequencies using a combination of peak and notch filters.
+2. Typically, the user can control
+
+- $\omega_0$: the center frequency,
+- $\Delta\omega$: the bandwidth, and
+- $G$: the amount of boost/cut
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+*** Active 5 minutes break
+    :PROPERTIES:
+    :CUSTOM_ID: active-5-minutes-break
+    :END:
+
+1. Together with your neightbour, explain as much as you can about the
+   equalizer on the picture (i.e., number of bands, user parameters,
+   etc.)
+
+   #+BEGIN_HTML
+     <center>
+   #+END_HTML
+
+   #+BEGIN_HTML
+     </center>
+   #+END_HTML
+
+** Shelving filters
+   :PROPERTIES:
+   :CUSTOM_ID: shelving-filters
+   :END:
+
+In the next 20 minutes, you will learn - what a shelving filter is and
+why we need them - that a shelving filter is a special case of the
+parametric equalizer filter
+
+Recall that a *parametric equalizer* functions by - dividing the
+frequency range into a number of bands - apply filters in each band
+which can amplify/attenuate the frequency content in this band
+
+What about the first (low frequencies) and last (high frequencies) band?
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+For the low and high frequencies, traditional low- and highpass filters
+are used instead of peak and notch filters. When used as shown below,
+the filter is called a *shelving filter*!
+
+The shelving filter exists in two forms: 1. Low frequency shelving
+filter 2. High frequency shelving filter
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+*** Low frequency shelving filter
+    :PROPERTIES:
+    :CUSTOM_ID: low-frequency-shelving-filter
+    :END:
+
+The low frequency shelving filter is simply the *parametric equalizer
+filter* with $\omega_0 = 0$ which can be written as \begin{align}
+    H_\text{low}(z) &= \frac{(b_0-b_2z^{-1})(1-z^{-1})}{(1+a_2z^{-1})(1-z^{-1})}\\
+    &= \frac{b_0-b_2z^{-1}}{1+a_2z^{-1}}
+\end{align} since $\cos(\omega_0)=1$ for $\omega_0=0$ where (as before)
+\begin{alignat}{2}
+    b_0 &= \frac{G_0+G\alpha}{1+\alpha}\ , &\qquad b_2 &= \frac{G_0-G\alpha}{1+\alpha}\\
+    a_2 &= -\frac{1-\alpha}{1+\alpha}\ , &\qquad \alpha &= \sqrt{\frac{G_\text{B}^2-G_0^2}{G^2-G_\text{B}^2}}\tan(\Delta\omega/2)\ .
+\end{alignat}
+
+In the context of the *low frequency shelving filter*, the meaning of
+$\Delta\omega$ and $G_\text{B}$ are - $\Delta\omega$: the cutoff
+frequency which is sometimes denoted as $\omega_\text{c}$ -
+$G_\text{B}$: the gain at the cutoff frequency which is sometimes
+denoted as $G_\text{C}$
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+ 
+
+#+BEGIN_SRC python :session :results output
+samplingFreq = 44100 # Hz
+centerFreq = 1 # Hz - for low shelving filter
+cutoffFreq = 250 # Hz
+gain = 1
+nDtft = 2048
+feedforwardParams, feedbackParams = paramEqFilterCoefficients(centerFreq*2*np.pi/samplingFreq, \
+    cutoffFreq*2*np.pi/samplingFreq, gain)
+digFreqVector, freqResp = sig.freqz(feedforwardParams, np.r_[1,-feedbackParams],nDtft)
+freqVector = digFreqVector*samplingFreq/(2*np.pi)
+plt.figure(figsize=(14,6))
+plt.plot(freqVector, np.abs(freqResp))
+plt.xlim((0,freqVector[-1])), plt.ylim((0,2)), plt.xlabel('$f$ [Hz]'), plt.ylabel('$|H_{low}(f)|$');
+#+END_SRC
+
+*** High frequency shelving filter
+    :PROPERTIES:
+    :CUSTOM_ID: high-frequency-shelving-filter
+    :END:
+
+The high frequency shelving filter is simply the *parametric equalizer
+filter* with $\omega_0 = \pi$ which can be written as \begin{align}
+    H_\text{high}(z) &= \frac{(b_0+b_2z^{-1})(1-z^{-1})}{(1-a_2z^{-1})(1-z^{-1})}\\
+    &= \frac{b_0+b_2z^{-1}}{1-a_2z^{-1}}
+\end{align} since $\cos(\omega_0)=-1$ for $\omega_0=\pi$ where (as
+before) \begin{alignat}{2}
+    b_0 &= \frac{G_0+G\alpha}{1+\alpha}\ , &\qquad b_2 &= \frac{G_0-G\alpha}{1+\alpha}\\
+    a_2 &= -\frac{1-\alpha}{1+\alpha}\ , &\qquad \alpha &= \sqrt{\frac{G_\text{B}^2-G_0^2}{G^2-G_\text{B}^2}}\tan(\Delta\omega/2)\ .
+\end{alignat}
+
+In the context of the *high frequency shelving filter*, the meaning of
+$\Delta\omega$ and $G_\text{B}$ are - $\Delta\omega$: the Nyquist
+frequency minus the cutoff frequency, i.e.,
+$\Delta\omega=\pi-\omega_\text{c}$ - $G_\text{B}$: the gain at the
+cutoff frequency which is sometimes denoted as $G_\text{C}$
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+ 
+
+#+BEGIN_SRC python :session :results output
+samplingFreq = 44100 # Hz
+centerFreq = samplingFreq/2 # Hz - for high shelving filter
+cutoffFreq = 20000 # Hz
+gain = 1.5
+nDtft = 2048
+feedforwardParams, feedbackParams = paramEqFilterCoefficients(centerFreq*2*np.pi/samplingFreq, \
+    np.pi-cutoffFreq*2*np.pi/samplingFreq, gain)
+digFreqVector, freqResp = sig.freqz(feedforwardParams, np.r_[1,-feedbackParams],nDtft)
+freqVector = digFreqVector*samplingFreq/(2*np.pi)
+plt.figure(figsize=(14,6))
+plt.plot(freqVector, np.abs(freqResp))
+plt.xlim((0,freqVector[-1])), plt.ylim((0,2)), plt.xlabel('$f$ [Hz]'), plt.ylabel('$|H_{high}(f)|$');
+#+END_SRC
+
+*** Multi-band parametric equalizer
+    :PROPERTIES:
+    :CUSTOM_ID: multi-band-parametric-equalizer
+    :END:
+
+Building a multi-band parametric equalizer is simply a question of -
+designing a number of parametric equalizer filters (possibly as low and
+high shelving filters) - connect all the parametric equalizer filters in
+series
+
+#+BEGIN_HTML
+  <center>
+#+END_HTML
+
+#+BEGIN_HTML
+  </center>
+#+END_HTML
+
+ 
+
+#+BEGIN_SRC python :session :results output
+def multibandParametricEq(digCenterFreqs, digBandwidths, gains, nDtft=0):
+    nBands = np.size(digCenterFreqs)
+    feedforwardParams = np.zeros((3,nBands))
+    feedbackParams = np.zeros((2,nBands))
+    if nDtft > 0:
+        freqResp = np.ones(nDtft)
+    for ii in np.arange(nBands):
+        feedforwardParams[:,ii], feedbackParams[:,ii] = \
+            paramEqFilterCoefficients(digCenterFreqs[ii], digBandwidths[ii], gains[ii])
+        if nDtft > 0:
+            digFreqVector, iifreqResp = \
+                sig.freqz(feedforwardParams[:,ii], np.r_[1,-feedbackParams[:,ii]],nDtft)
+            freqResp = freqResp*iifreqResp
+    if nDtft > 0:
+        return feedforwardParams, feedbackParams, digFreqVector, freqResp
+    else:
+        return feedforwardParams, feedbackParams
+#+END_SRC
+
+ 
+
+#+BEGIN_SRC python :session :results output
+samplingFreq = 44100 # Hz
+centerFreqs = np.array([0, 3000, 10000, samplingFreq/2]) # Hz
+bandwidths = np.array([1000, 1000, 300, 15000]) # Hz
+gains = np.array([1.2, 0.2, 2, 0.8])
+nDtft = 2048
+feedforwardParams, feedbackParams, digFreqVector, freqResp = \
+    multibandParametricEq(centerFreqs*2*np.pi/samplingFreq, bandwidths*2*np.pi/samplingFreq, gains, nDtft)
+#+END_SRC
+
+ 
+
+#+BEGIN_SRC python :session :results output
+freqVector = digFreqVector*samplingFreq/(2*np.pi)
+plt.figure(figsize=(14,6))
+plt.plot(freqVector, np.abs(freqResp))
+plt.xlim((0,freqVector[-1])), plt.ylim((0,2)), plt.xlabel('$f$ [Hz]'), plt.ylabel('$|H_{high}(f)|$');
+#+END_SRC
+
+*** Summary
+    :PROPERTIES:
+    :CUSTOM_ID: summary
+    :END:
+
+1. Shelving filters are low and high pass filters which can either
+   amplify or attenuate low and high frequencies.
+2. Shelving filters are used only for the first and last band of an
+   equalizer.
+3. A shelving filter is a special case of the parametric equalizer
+   filter.
+
+   #+BEGIN_HTML
+     <center>
+   #+END_HTML
+
+   #+BEGIN_HTML
+     </center>
+   #+END_HTML
