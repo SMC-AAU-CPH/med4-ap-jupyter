@@ -25,7 +25,7 @@ striking a bar creates a sinusoidal sound
     :END:
 
 Sound is a *vibration* which travels through a medium as 
-- *longitudinal* waves: 
+*longitudinal* waves: 
   - gasses (e.g., air),
   - liquids (e.g., water), and
   - solids (e.g., concrete)
@@ -54,35 +54,23 @@ liqued is the basilar membrane which vibrates when sound propagates
 through the fluid. These vibrations are converted into electrical
 signals by hair cells attached to the basilar membrane.
 
-#+BEGIN_HTML
-  <center>
-#+END_HTML
-
-#+BEGIN_HTML
-  </center>
-#+END_HTML
-
-The human ear - does not hear all frequencies equally well - is most
-sensitive to frequencies around 4 kHz - is tuned to speech - has a
-really large dynamic range of up to ~120 dB (i.e., we can hear sound
+The human ear 
+- does not hear all frequencies equally well 
+- is most sensitive to frequencies around 4 kHz 
+- is tuned to speech 
+- has a really large dynamic range of up to ~120 dB (i.e., we can hear sound
 intensities up to ~10^12 the quietest sounds)
 
-#+BEGIN_HTML
-  <center>
-#+END_HTML
-
-#+BEGIN_HTML
-  </center>
-#+END_HTML
 
 *** Sinusoids
     :PROPERTIES:
     :CUSTOM_ID: sinusoids
     :END:
 
-A sinusoid (or a sine wave) is given by $$
+A sinusoid (or a sine wave) is given by 
     x(t) = A \cos(\Omega t + \Phi)
-$$ where - $A\geq0$ is the *amplitude* - $\Omega$ is the *frequency*
+where 
+- $A\geq0$ is the *amplitude* - $\Omega$ is the *frequency*
 measured in radians pr. second (SI symbol *rad/s*). Is related to the
 frequency $f$ measured in cycles pr. second (SI symbol *Hz*) via
 $\Omega = 2\pi f$. - $t$ is the *time* measured in seconds (SI symbol
