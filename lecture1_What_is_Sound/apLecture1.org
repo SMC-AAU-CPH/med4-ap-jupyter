@@ -3,20 +3,17 @@
   :CUSTOM_ID: lecture-1-what-is-sound
   :END:
 
-Audio Processing, MED4, Aalborg University, 2019
-
-By Jesper Kjær Nielsen (jkn@create.aau.dk), Audio Analysis Lab, Aalborg
-University.
-
-Last edited: 2019-02-04
 
 ** Sound and simple vibrations
    :PROPERTIES:
    :CUSTOM_ID: sound-and-simple-vibrations
    :END:
 
-In the next 20 minutes, you will learn - What sound is and how it
-propagates - How humans perceive sound - What a sinusoid is - that
+In the next 20 minutes, you will learn 
+
+- What sound is and how it propagates
+- How humans perceive sound
+- What a sinusoid is - that
 striking a bar creates a sinusoidal sound
 
 *** What is sound?
@@ -24,16 +21,14 @@ striking a bar creates a sinusoidal sound
     :CUSTOM_ID: what-is-sound
     :END:
 
-Sound is a *vibration* which travels through a medium as 
-*longitudinal* waves: 
+Sound is a *vibration* which travels through a medium as *longitudinal* waves: 
   - gasses (e.g., air),
   - liquids (e.g., water), and
   - solids (e.g., concrete)
 - *transversal* sound waves: solids (e.g., concrete)
 
 
-The *speed of sound* depends on the medium. In, e.g., air at room
-temperature, it is approximately 343 m/s.
+The *speed of sound* depends on the medium. In, e.g., air at room temperature, it is approximately 343 m/s.
 
 Sound is normally divided into three types: 1. Infrasound: Sound with
 frequencies up to 20 Hz 2. Audible sound: Sound with frequencies in
