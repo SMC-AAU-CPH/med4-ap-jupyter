@@ -3,6 +3,6 @@ based on the book "Introduction to Audio Processing", M. G. Christensen, 2019, S
 https://www.springer.com/gp/book/9783030117801
 
 * Contents
-<a href="https://colab.research.google.com/github/googlecolab/colabtools/blob/master/notebooks/colab-github-demo.ipynb">
-  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
-</a>
+
+- [[https://colab.research.google.com/github/SMC-AAU-CPH/med4-ap-jupyter/blob/main/lecture1_What_is_Sound/apLecture1.ipynb][https://colab.research.google.com/assets/colab-badge.svg]]
+- [[https://colab.research.google.com/github/SMC-AAU-CPH/med4-ap-jupyter/blob/main/lecture1_What_is_Sound/apLecture1.ipynb][https://colab.research.google.com/assets/colab-badge.svg]]
