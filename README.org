@@ -1,8 +1,19 @@
-Notebooks for the Medialogy MED4 course Audio Processing, 
-based on the book "Introduction to Audio Processing", M. G. Christensen, 2019, Springer
+Notebooks for the Medialogy MED4 course Audio Processing, by Jesper Kjær Nielsen and Cumhur Erkut.
+Based on the book "Introduction to Audio Processing", M. G. Christensen, 2019, Springer
 https://www.springer.com/gp/book/9783030117801
 
 * Contents
 
-- [[https://colab.research.google.com/github/SMC-AAU-CPH/med4-ap-jupyter/blob/main/lecture1_What_is_Sound/apLecture1.ipynb][https://colab.research.google.com/assets/colab-badge.svg]]
-- [[https://colab.research.google.com/github/SMC-AAU-CPH/med4-ap-jupyter/blob/main/lecture1_What_is_Sound/apLecture1.ipynb][https://colab.research.google.com/assets/colab-badge.svg]]
+- [[https://colab.research.google.com/github/SMC-AAU-CPH/med4-ap-jupyter/blob/main/lecture1_What_is_Sound/apLecture1.ipynb][https://colab.research.google.com/assets/colab-badge.svg]] 01 What is Sound?
+- [[https://colab.research.google.com/github/SMC-AAU-CPH/med4-ap-jupyter/blob/main/lecture2_Wave_Equation/apLecture2.ipynb][https://colab.research.google.com/assets/colab-badge.svg]] 02 The Wave Equation
+- [[https://colab.research.google.com/github/SMC-AAU-CPH/med4-ap-jupyter/blob/main/lecture3_Digital_Audio_Signals/apLecture3.ipynb ][https://colab.research.google.com/assets/colab-badge.svg]] 03 Digital Audio Signals
+- [[https://colab.research.google.com/github/SMC-AAU-CPH/med4-ap-jupyter/blob/main/lecture4_What_are_Filters/apLecture4.ipynb][https://colab.research.google.com/assets/colab-badge.svg]] 04 What are Filters?
+- [[https://colab.research.google.com/github/SMC-AAU-CPH/med4-ap-jupyter/blob/main/lecture5_Comb_Filters_Periodic_Signals/apLecture5.ipynb][https://colab.research.google.com/assets/colab-badge.svg]] 05 Comb Filters and Periodic Signals 
+- [[https://colab.research.google.com/github/SMC-AAU-CPH/med4-ap-jupyter/blob/main/lecture6_More_About_Filters/apLecture6.ipynb][https://colab.research.google.com/assets/colab-badge.svg]] 06 More about filters
+- [[https://colab.research.google.com/github/SMC-AAU-CPH/med4-ap-jupyter/blob/main/lecture7_Fourer_Transfom/apLecture7.ipynb][https://colab.research.google.com/assets/colab-badge.svg]] 07 Fourier transform
+- [[https://colab.research.google.com/github/SMC-AAU-CPH/med4-ap-jupyter/blob/main/lecture8_Audio_Fx/apLecture8.ipynb][https://colab.research.google.com/assets/colab-badge.svg]] 08 Audio Effects
+- [[https://colab.research.google.com/github/SMC-AAU-CPH/med4-ap-jupyter/blob/main/lecture9_Spatial_Fx/apLecture9.ipynb][https://colab.research.google.com/assets/colab-badge.svg]] 09 Spatial Effects
+- [[https://colab.research.google.com/github/SMC-AAU-CPH/med4-ap-jupyter/blob/main/lectureA_Eq/apLecture10.ipynb][https://colab.research.google.com/assets/colab-badge.svg]] 10 Equalizers
+- [[https://colab.research.google.com/github/SMC-AAU-CPH/med4-ap-jupyter/blob/main/lectureB_Dynamic_Range_Control/apLecture11.ipynb][https://colab.research.google.com/assets/colab-badge.svg]] 11 Dynamic Range Control
+- [[https://colab.research.google.com/github/SMC-AAU-CPH/med4-ap-jupyter/blob/main/lectureC_Pitch_Estimation/apLecture12.ipynb][https://colab.research.google.com/assets/colab-badge.svg]] 12 Pitch Estimation
+
