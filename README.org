@@ -3,4 +3,5 @@ based on the book "Introduction to Audio Processing", M. G. Christensen, 2019, S
 https://www.springer.com/gp/book/9783030117801
 
 * Contents
-- https://colab.research.google.com/github/SMC-AAU-CPH/med4-ap-jupyter/blob/main/lecture1_What_is_Sound/apLecture1.ipynb
+[![Open In Colab: 01-What is Sound](https://colab.research.google.com/assets/colab-badge.svg)]
+(https://colab.research.google.com/github/SMC-AAU-CPH/med4-ap-jupyter/blob/main/lecture1_What_is_Sound/apLecture1.ipynb)
