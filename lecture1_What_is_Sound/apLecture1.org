@@ -30,10 +30,11 @@ Sound is a *vibration* which travels through a medium as *longitudinal* waves:
 
 The *speed of sound* depends on the medium. In, e.g., air at room temperature, it is approximately 343 m/s.
 
-Sound is normally divided into three types: 1. Infrasound: Sound with
-frequencies up to 20 Hz 2. Audible sound: Sound with frequencies in
-range 20 Hz - 20 kHz (this is often referred to as *audio*) 3. Ultra
-sound: Sound with frequencies above 20 kHz
+Sound is normally divided into three types: 
+
+1. Infrasound: Sound with frequencies up to 20 Hz 
+2. Audible sound: Sound with frequencies in range 20 Hz - 20 kHz (this is often referred to as *audio*)
+3. Ultrasound: Sound with frequencies above 20 kHz
 
 *** Human hearing
     :PROPERTIES:
