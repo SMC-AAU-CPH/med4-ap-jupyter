@@ -118,3 +118,4 @@ etc/
 ./*/etc/
 .vscode/
 *slides.html
+.DS_Store
