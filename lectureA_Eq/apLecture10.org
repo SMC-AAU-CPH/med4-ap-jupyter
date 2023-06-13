@@ -558,7 +558,7 @@ plt.xlim((0,freqVector[-1])), plt.ylim((0,1)), plt.xlabel('$f$ [Hz]'), plt.ylabe
      </center>
    #+END_HTML
 
-2. A peak (bandpass) filter can be used to remove frequencies
+2. A peak (bandpass) filter can be used to enhance frequencies
 
    #+BEGIN_HTML
      <center>
